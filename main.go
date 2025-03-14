@@ -101,15 +101,6 @@ func extentsBlocks(blocks []cover.ProfileBlock) string {
 	return formatBlock(b)
 }
 
-// allBlocks returns a string representing all the blocks.
-func allBlocks(blocks []cover.ProfileBlock) string {
-	var out []string
-	for _, b := range blocks {
-		out = append(out, formatBlock(b))
-	}
-	return strings.Join(out, ",")
-}
-
 // missingBlocks returns a strring representing the lines missing coverage.
 func missingBlocks(blocks []cover.ProfileBlock) string {
 	var out []string
@@ -131,11 +122,6 @@ func missingBlocks(blocks []cover.ProfileBlock) string {
 		out = append(out, formatBlock(accumul))
 	}
 	return strings.Join(out, ",")
-}
-
-// printCoverageOld is the implementation using go tool cover.
-func printCoverageOld(ctx context.Context, name string, all bool) error {
-	return command(ctx, "go", "tool", "cover", "-func", name).Run()
 }
 
 func commonPrefix(a, b string) string {
