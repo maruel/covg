@@ -4,6 +4,10 @@ Yet another CLI coverage tool.
 
 It is essentially `go tool cover -func` but with much more fine tuned output.
 
+It is particularly useful when you have a large codebase and you want to see
+the coverage of a single package. Many IDEs will run *all tests* from *all
+packages* and this may be too slow.
+
 ## Install
 
     go install github.com/maruel/covg@latest
