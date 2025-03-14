@@ -231,7 +231,7 @@ func runCover(ctx context.Context, pkgs, extraArgs []string, all bool) error {
 		return err
 	}
 	name := f.Name()
-	f.Close()
+	_ = f.Close()
 	args := append([]string{"go", "test", "-covermode=count", "-coverprofile", name}, extraArgs...)
 	c := command(ctx, append(args, pkgs...)...)
 	if err = c.Run(); err == nil {

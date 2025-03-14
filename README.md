@@ -4,7 +4,11 @@ Yet another CLI coverage tool.
 
 It is essentially `go tool cover -func` but with much more fine tuned output.
 
-Use with:
+## Install
+
+    go install github.com/maruel/covg@latest
+
+## Usage
 
     covg <packages> [--] <go test args>
 
@@ -39,6 +43,6 @@ Pass `-a` to also print the function covered at 100%.
 
 ## Imports
 
-`func.go` was copyed from
+`func.go` was copied from
 https://go.googlesource.com/go/+/refs/tags/go1.13rc2/src/cmd/cover/func.go with
 a minor import fixes.
