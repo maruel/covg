@@ -6,7 +6,7 @@
 //
 // Use with:
 //
-//  covg <packages> [--] <go test args>
+//	covg <packages> [--] <go test args>
 package main
 
 import (
@@ -17,7 +17,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -54,7 +53,6 @@ func (f *FuncExtent) profile(profile *cover.Profile) []cover.ProfileBlock {
 			if start == -1 {
 				// TODO(maruel) Temporary to find bugs, if any.
 				panic(f.name)
-				return nil
 			}
 			return profile.Blocks[start:i]
 		}
@@ -103,7 +101,7 @@ func extentsBlocks(blocks []cover.ProfileBlock) string {
 	return formatBlock(b)
 }
 
-// allBlocks returns a strring representing all the blocks.
+// allBlocks returns a string representing all the blocks.
 func allBlocks(blocks []cover.ProfileBlock) string {
 	var out []string
 	for _, b := range blocks {
@@ -228,7 +226,7 @@ func printCoverage(ctx context.Context, name string, all bool) error {
 // runCover runs the test under coverage and prints the coverage.
 func runCover(ctx context.Context, pkgs, extraArgs []string, all bool) error {
 	log.Printf("runCover(%#v, %s, %t)", pkgs, extraArgs, all)
-	f, err := ioutil.TempFile("", "covg")
+	f, err := os.CreateTemp("", "covg")
 	if err != nil {
 		return err
 	}
@@ -245,7 +243,7 @@ func runCover(ctx context.Context, pkgs, extraArgs []string, all bool) error {
 	if err2 := os.Remove(name); err == nil {
 		err = err2
 	}
-	return nil
+	return err
 }
 
 // getPackages resolves the provided packages into canonical format.
@@ -269,7 +267,7 @@ func mainImpl() error {
 
 	log.SetFlags(log.Lmicroseconds)
 	if !*verboseFlag {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 	}
 
 	args := flag.Args()
@@ -291,7 +289,7 @@ func mainImpl() error {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	c := make(chan os.Signal)
+	c := make(chan os.Signal, 1)
 	go func() {
 		<-c
 		cancel()

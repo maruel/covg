@@ -7,7 +7,7 @@ package main
 import (
 	"bytes"
 	"flag"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -15,7 +15,7 @@ import (
 )
 
 func TestSmokePkg(t *testing.T) {
-	defer mockArgs([]string{"covg", "-v", "./testpkg"})()
+	defer mockArgs([]string{"covg", "-v", "./testdata/testpkg"})()
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	if err := mainImpl(); err != nil {
 		t.Fatal(err)
@@ -28,12 +28,12 @@ func TestSmokePkg(t *testing.T) {
 }
 
 func TestSmokePkgAll(t *testing.T) {
-	defer mockArgs([]string{"covg", "-a", "./testpkg"})()
+	defer mockArgs([]string{"covg", "-a", "./testdata/testpkg"})()
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	if err := mainImpl(); err != nil {
 		t.Fatal(err)
 	}
-	expected := "github.com/maruel/covg/testpkg/testpkg.go:7:\ttested\t\t100.0% 7-9\ngithub.com/maruel/covg/testpkg/testpkg.go:11:\tuntested\t  0.0% 11-13\ngithub.com/maruel/covg/testpkg/testpkg.go:15:\tpartlytested\t 80.0% 17-19\ntotal:\t\t\t\t\t\t(statements)\t 71.4%\n"
+	expected := "github.com/maruel/covg/testdata/testpkg/testpkg.go:7:\ttested\t\t100.0% 7-9\ngithub.com/maruel/covg/testdata/testpkg/testpkg.go:11:\tuntested\t  0.0% 11-13\ngithub.com/maruel/covg/testdata/testpkg/testpkg.go:15:\tpartlytested\t 80.0% 17-19\ntotal:\t\t\t\t\t\t\t(statements)\t 71.4%\n"
 	parts := strings.SplitN(stdout.(*bytes.Buffer).String(), "\n", 2)
 	if parts[1] != expected {
 		t.Fatalf("Output mismatch\nGot      %q\nExpected %q", parts[1], expected)
@@ -45,7 +45,7 @@ func mockArgs(args []string) func() {
 	oldargs := os.Args
 	os.Args = args
 	if !testing.Verbose() {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 	}
 	stdout = &bytes.Buffer{}
 	return func() {
